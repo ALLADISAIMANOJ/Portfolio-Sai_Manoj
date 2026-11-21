@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Experience from '../components/Experience.astro';
+import WorkCard from '../components/WorkCard.astro';
+import PostRow from '../components/PostRow.astro';
+import Icon from '../components/Icon.astro';
+import { profile } from '../data/profile';
+import { selectedWork } from '../data/work';
+import { publishedPosts } from '../data/blog';
+import { withBase } from '../lib/url';
+const work = (await selectedWork()).slice(0, 2);
+const posts = (await publishedPosts()).slice(0, 3);
+---
+<Base title={`${profile.name} — Software Engineer, AI & Backend`} description={`${profile.name} builds reliable AI agents and backend systems. Explore his experience, case studies and writing.`}>
+  <Hero /><About /><Experience />
+  <section class="section" id="work" aria-labelledby="work-title"><div class="container">
+    <header class="head split"><div><p class="eyebrow">Selected work</p><h2 id="work-title">Case studies</h2></div><a class="more" href={withBase('/work/')}>All work <Icon name="right" size={16} /></a></header>
+    <div class="work">{work.map((entry) => <WorkCard entry={entry} />)}</div>
+  </div></section>
+  <section class="section compact" id="writing" aria-labelledby="writing-title"><div class="container">
+    <header class="head split"><div><p class="eyebrow">Writing</p><h2 id="writing-title">Latest from the blog</h2></div><a class="more" href={withBase('/blog/')}>All posts <Icon name="right" size={16} /></a></header>
+    {posts.length ? <ul class="posts">{posts.map((post) => <PostRow post={post} />)}</ul> : <p>New writing will appear here.</p>}
+  </div></section>
+  <section class="section compact" id="contact" aria-labelledby="contact-title"><div class="container"><div class="cta-card">
+    <p class="eyebrow">Contact</p><h2 id="contact-title">Let’s build something <span class="g">reliable.</span></h2>
+    <p>For roles, collaborations or a good engineering question, LinkedIn is the best way to reach me.</p>
+    <div class="cta"><a class="btn btn-1" href={profile.links.linkedin} rel="me">Message me on LinkedIn <Icon name="outbound" size={16} /></a><a class="btn btn-2" href={profile.links.github} rel="me">GitHub</a><a class="btn btn-2" href={profile.links.leetcode} rel="me">LeetCode</a></div>
+  </div></div></section>
+</Base>

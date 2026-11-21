@@ -1,0 +1,32 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { profile } from '../../data/profile';
+import { formatDate, publishedPosts, readingMinutes } from '../../data/blog';
+import { withBase } from '../../lib/url';
+export async function getStaticPaths() {
+  const local = (await publishedPosts()).filter((p) => !p.data.externalUrl);
+  return local.map((post, i) => ({
+    params: { slug: post.id }, props: { post, newer: local[i-1] ?? null, older: local[i+1] ?? null },
+  }));
+}
+const { post, newer, older } = Astro.props;
+const { data } = post;
+const { Content } = await render(post);
+---
+<Base title={`${data.title} — ${profile.name}`} description={data.description} type="article" noindex={data.draft}>
+  <article class="container inner measure">
+    <a class="back" href={withBase('/blog/')}><Icon name="left" size={16} /> All writing</a>
+    <header class="intro"><p class="eyebrow">Engineering notes</p><h1>{data.title}</h1>
+      <p>{data.description}</p><div class="byline"><span class="logo" aria-hidden="true">{profile.initials}</span><strong>{profile.name}</strong><time datetime={data.date.toISOString().slice(0,10)}>{formatDate(data.date)}</time><span>{readingMinutes(post)} min read</span></div>
+      {data.updated && <span class="post-meta">Updated {formatDate(data.updated)}</span>}
+      <ul class="chips">{data.tags.map((t) => <li><a class="chip" href={withBase(`/blog/?tag=${encodeURIComponent(t)}`)}>#{t}</a></li>)}</ul>
+    </header>
+    <div class="prose"><Content /></div>
+    {(older || newer) && <nav class="reading-nav" aria-label="Other posts">
+      {older && <a class="more" href={withBase(`/blog/${older.id}/`)}>← {older.data.title}</a>}
+      {newer && <a class="more" href={withBase(`/blog/${newer.id}/`)}>{newer.data.title} →</a>}
+    </nav>}
+  </article>
+</Base>

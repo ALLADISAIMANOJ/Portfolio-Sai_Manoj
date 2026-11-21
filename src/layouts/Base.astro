@@ -1,0 +1,74 @@
+---
+import '../styles/global.css';
+import '../styles/pages.css';
+import { profile } from '../data/profile';
+import { withBase } from '../lib/url';
+import Icon from '../components/Icon.astro';
+
+interface Props { title: string; description: string; type?: 'website' | 'article'; noindex?: boolean }
+const { title, description, type = 'website', noindex = false } = Astro.props;
+const home = Astro.url.pathname === withBase('/');
+const canonical = Astro.site && !noindex ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const share = withBase('/share.png');
+const links = [
+  ['About', '/#about'], ['Experience', '/#experience'], ['Work', '/#work'],
+  ['Writing', home ? '/#writing' : '/blog/'], ['Contact', '/#contact'],
+];
+---
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#07070b" />
+    <script is:inline>
+      try {
+        if (localStorage.getItem('aurora-theme') === 'light') {
+          document.documentElement.dataset.theme = 'light';
+          document.querySelector('meta[name="theme-color"]').content = '#fbfbfd';
+        }
+      } catch (error) {
+        if (!(error instanceof DOMException && error.name === 'SecurityError')) throw error;
+      }
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={profile.name} />
+    {(noindex || !Astro.site) && <meta name="robots" content="noindex, follow" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={Astro.site ? new URL(share, Astro.site).href : share} />
+    <meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${profile.name} — ${profile.title}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="alternate" type="application/rss+xml" title={`${profile.name} — Writing`} href={withBase('/rss.xml')} />
+  </head>
+  <body id="top">
+    <a class="skip" href="#main">Skip to content</a>
+    <nav class="nav" aria-label="Main navigation">
+      <a class="logo" href={withBase('/')} aria-label={`${profile.name} — Home`}>{profile.initials}</a>
+      <div class="nav-items" id="nav-items">
+        {links.map(([label, path]) => (
+          <a class="nl" href={withBase(path)} aria-current={label === 'Writing' && Astro.url.pathname.startsWith(withBase('/blog/')) ? 'location' : undefined}>{label}</a>
+        ))}
+      </div>
+      <span class="vsep" aria-hidden="true"></span>
+      <button class="ib" type="button" data-theme-toggle hidden aria-label="Switch to light mode">
+        <Icon name="sun" class="sun" /><Icon name="moon" class="moon" />
+      </button>
+      <button class="ib menu" type="button" data-menu hidden aria-label="Open navigation" aria-controls="nav-items" aria-expanded="false"><Icon name="menu" /></button>
+      <a class="nav-cta" href={withBase('/resume/')} aria-current={Astro.url.pathname === withBase('/resume/') ? 'page' : undefined}>Résumé</a>
+    </nav>
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer class="site-footer"><div class="container fr">
+      <span>© {new Date().getUTCFullYear()} {profile.name}</span>
+      <div class="foot-links"><span>{profile.location}</span><a href={withBase('/blog/')}>Writing</a><a href={withBase('/rss.xml')}>RSS</a><a href="#top">Back to top ↑</a></div>
+    </div></footer>
+    <script>import '../scripts/site';</script>
+  </body>
+</html>

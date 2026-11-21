@@ -1,0 +1,28 @@
+---
+const paths = {
+  right: 'M5 12h14M13 6l6 6-6 6',
+  left: 'M19 12H5M11 18l-6-6 6-6',
+  up: 'M12 19V5M6 11l6-6 6 6',
+  down: 'M12 5v14M6 13l6 6 6-6',
+  outbound: 'M7 17 17 7M8 7h9v9',
+  print: 'M7 9V3h10v6M7 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M7 14h10v7H7z',
+  sun: 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
+  moon: 'M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z',
+  menu: 'M3 6h18M3 12h18M3 18h18',
+  check: 'M5 12l4.5 4.5L19 7',
+  clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2',
+  resume: 'M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6',
+  replay: 'M3 10a9 9 0 1 1 2 9M3 4v6h6',
+  trophy: 'M8 3h8v6a4 4 0 0 1-8 0zM8 5H4v2a4 4 0 0 0 4 4M16 5h4v2a4 4 0 0 1-4 4M12 13v6M8 21h8',
+  cap: 'M2 9l10-5 10 5-10 5zM6 11v5q6 6 12 0v-5',
+  pin: 'M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0zM14 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0z',
+  linkedin: 'M3 3h18v18H3zM7 11v6M7 7h.01M11 17v-6m0 3c0-4 6-4 6 0v3',
+  github: 'M9 21c-4 1-4-2-6-2m12 3v-4c0-1-.3-1.6-.8-2 2.8-.3 5.8-1.4 5.8-6.2 0-1.5-.5-2.5-1.3-3.3.2-.8.1-2.1-.2-3.2-1 .0-2.4.6-3.4 1.4a12 12 0 0 0-6.2 0c-1-.8-2.4-1.4-3.4-1.4-.3 1.1-.4 2.4-.2 3.2C4.5 7.3 4 8.3 4 9.8c0 4.8 3 5.9 5.8 6.2-.5.4-.8 1-.8 2v4',
+  leetcode: 'M15 3 5.5 12.5a3 3 0 0 0 0 4.2l4 4a3 3 0 0 0 4.2 0L17 17.4M8.5 9.5l2-2a3 3 0 0 1 4.2 0L18 10M10 14h11',
+  rss: 'M5 5a14 14 0 0 1 14 14M5 11a8 8 0 0 1 8 8M6 19.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z',
+};
+export type IconName = keyof typeof paths;
+interface Props { name: IconName; size?: number; class?: string; stroke?: number }
+const { name, size = 18, class: className, stroke = 1.8 } = Astro.props;
+---
+<svg class:list={['icon', className]} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width={stroke} stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d={paths[name]} /></svg>

@@ -1,0 +1,36 @@
+---
+import { profile } from '../data/profile';
+import Icon from './Icon.astro';
+const dots = ['#75aaff', '#ffb358', '#7eaafa', '#b8a3ff', '#e9a7ff', '#72eada', '#ffd66b'];
+---
+<section class="section" id="about" aria-labelledby="about-title"><div class="container">
+  <header class="head"><p class="eyebrow">About</p><h2 id="about-title">Engineer by craft. <span class="m">Reliability by habit.</span></h2></header>
+  <div class="bento">
+    <article class="b b-about">
+      <div class="me"><div class="avatar" aria-hidden="true"><span><b class="g">{profile.initials}</b></span></div><div><b>{profile.name}</b><small>{profile.title}</small></div></div>
+      {profile.bio.map((s) => <p>{s}</p>)}
+      <div class="tags"><span class="tag"><Icon name="pin" size={14} />{profile.location}</span><span class="tag"><Icon name="clock" size={14} /><span data-local-clock={profile.timeZone}>IST</span></span><span class="tag"><Icon name="cap" size={14} />{profile.education.short} ’24</span></div>
+    </article>
+    <article class="b stat"><p class="k">Experience</p><p class="big g">{profile.experience}</p><p class="lbl">years building AI &amp; backend systems</p><div class="bars" aria-hidden="true">{[22,38,31,56,48,74,100].map((h) => <i style={`height:${h}%`}></i>)}</div></article>
+    <article class="b stat"><p class="k">Practice</p><p class="big g">{profile.solved}</p><p class="lbl">LeetCode problems solved</p><div class="cal" aria-hidden="true">{Array.from({length: 28}, (_, i) => <i class={`l${(i * 7 + (i % 5) * 3) % 4}`}></i>)}</div></article>
+    <article class="b b-now"><p class="k nowk"><span class="live" aria-hidden="true"></span>Currently</p><h3>SDE at {profile.roles[0].team}</h3><p>{profile.roles[0].summary}</p></article>
+    <article class="b b-stack"><p class="k">Toolkit</p>
+      <div class="marq">{profile.toolkit.map((tools, r) => (
+        <div class:list={['row', {r2: r === 1}]}>{[0, 1].flatMap((copy) => tools.map((tool, i) => (
+          <span class="sk" aria-hidden={copy === 1 ? 'true' : undefined}><i style={`background:${dots[i % dots.length]}`}></i>{tool}</span>
+        )))}</div>
+      ))}</div>
+    </article>
+    <article class="b b-small"><span class="icn"><Icon name="trophy" size={22} /></span><h3>Hackathon winner</h3><p>{profile.award}</p></article>
+    <article class="b b-small"><span class="icn"><Icon name="cap" size={22} /></span><h3>{profile.education.gpa} GPA <small>/ 10</small></h3><p>B.E. Computer Science · {profile.education.short}</p></article>
+  </div>
+</div></section>
+<script>
+  const clock = document.querySelector<HTMLElement>('[data-local-clock]');
+  if (clock) {
+    const time = new Intl.DateTimeFormat('en-GB', { timeZone: clock.dataset.localClock, hour: '2-digit', minute: '2-digit', hour12: false });
+    const update = () => { clock.textContent = `${time.format(new Date())} IST`; };
+    update();
+    setInterval(update, 60_000);
+  }
+</script>

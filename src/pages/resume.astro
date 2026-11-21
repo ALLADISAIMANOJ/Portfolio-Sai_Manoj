@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { profile as p } from '../data/profile';
+import { withBase } from '../lib/url';
+---
+<Base title={`Résumé — ${p.name}`} description={`${p.name}’s experience, education, achievements and selected technologies, formatted for print.`}>
+  <div class="container inner resume-wrap">
+    <div class="resume-tools"><a class="back" href={withBase('/')}><Icon name="left" size={16} /> Home</a><button class="btn btn-1" type="button" data-print hidden><Icon name="print" size={16} /> Print / Save PDF</button><noscript>Use your browser’s Print command to save a PDF.</noscript></div>
+    <article class="resume">
+      <header><p class="eyebrow">Résumé</p><h1>{p.name}</h1><b>{p.title} · {p.location}</b><p>{p.summary}</p>
+        <ul class="resume-profiles">{Object.entries(p.links).map(([name,href]) => <li><a href={href}>{name === 'github' ? 'GitHub' : name === 'linkedin' ? 'LinkedIn' : 'LeetCode'} ↗</a></li>)}</ul>
+      </header>
+      <section><h2>Experience</h2>{p.roles.map((r) => <div class="resume-role">
+        <div><h3>{r.company} · {r.title}</h3><span>{r.start} – {r.end}</span></div><p class="resume-team">{r.team}</p>
+        <ul>{r.points.map((point) => <li>{point}</li>)}</ul>
+      </div>)}</section>
+      <section><h2>Technologies</h2><p>{p.toolkit.flat().join(' · ')}</p></section>
+      <section><h2>Education &amp; achievements</h2><h3>{p.education.school}</h3><p>{p.education.degree} · {p.education.dates} · GPA {p.education.gpa}/10</p><p>{p.award} · {p.solved} LeetCode problems solved</p></section>
+    </article>
+  </div>
+</Base>
+<script>
+  const printButton = document.querySelector<HTMLButtonElement>('[data-print]');
+  if (printButton) { printButton.hidden = false; printButton.addEventListener('click', () => window.print()); }
+</script>

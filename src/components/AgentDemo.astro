@@ -1,0 +1,28 @@
+---
+import Icon from './Icon.astro';
+const steps = [
+  ['Read the sample log', 'logs.search()', '01'],
+  ['Check the sample timeline', 'events.read()', '02'],
+  ['Look up the sample policy', 'guide.find()', '03'],
+];
+---
+<figure class="agent-wrap" id="agent" aria-labelledby="agent-caption">
+  <div class="agent">
+    <div class="ah"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>investigation-agent<span class="run">local demo</span></div>
+    <div class="ab">
+      <p class="q"><span class="you">you</span>Why is this example payment pending?</p>
+      <ol class="steps">{steps.map(([label, call, index], i) => <li style={`--d:${i * .16}s`}>
+        <span class="ok-ic"><Icon name="check" size={12} stroke={3} /></span>
+        <span>{label} <code>{call}</code></span><span class="t">{index}</span>
+      </li>)}</ol>
+      <div class="ans"><b>Finding:</b> the sample records show a debit, but no final confirmation. Check the final state before proposing a retry.
+        <div class="srcs">3 sample sources <span class="c">log</span><span class="c">timeline</span><span class="c">policy</span></div>
+      </div>
+      <details class="review">
+        <summary class="appr"><span>Human review required</span><span class="review-action">Review proposal</span></summary>
+        <p>Hold the retry until settlement is confirmed. A missing receipt alone is not evidence that the payment failed.</p>
+      </details>
+    </div>
+  </div>
+  <figcaption class="cap" id="agent-caption">Illustrative demo · fictional data · no live systems or actions</figcaption>
+</figure>

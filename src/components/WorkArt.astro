@@ -1,0 +1,19 @@
+---
+import Icon from './Icon.astro';
+interface Props { variant: 'flow' | 'pages' }
+const { variant } = Astro.props;
+const stages = [
+  { label: 'debit', icon: 'check', color: 'okn' }, { label: 'timeout', icon: 'clock', color: 'warn' },
+  { label: 'review', icon: 'replay', color: 'acc' }, { label: 'settled', icon: 'check', color: 'okn' },
+] as const;
+---
+{variant === 'flow' ? (
+  <div class="wv v1" aria-hidden="true"><span class="dryrun">order-recovery · dry run</span><div class="flow">
+    {stages.map((stage, i) => <>{i > 0 && <span class="link"></span>}<div class="node"><span class:list={['nb', stage.color]}><Icon name={stage.icon} size={22} /></span><small>{stage.label}</small></div></>)}
+  </div></div>
+) : (
+  <div class="wv v2" aria-hidden="true"><div class="doc">
+    <div class="paper"><i class="t"></i><i></i><i style="width:82%"></i><i class="hl"></i><i style="width:90%"></i><i style="width:64%"></i></div>
+    <div class="bubble">The reading room closes at 18:00.<span class="cite">§2</span></div>
+  </div></div>
+)}

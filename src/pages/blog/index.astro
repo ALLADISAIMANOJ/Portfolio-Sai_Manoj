@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import PostRow from '../../components/PostRow.astro';
+import { profile } from '../../data/profile';
+import { allTags, publishedPosts } from '../../data/blog';
+import { withBase } from '../../lib/url';
+const posts = await publishedPosts();
+const tags = allTags(posts);
+---
+<Base title={`Writing — ${profile.name}`} description={`Articles by ${profile.name} about AI agents, retrieval and backend engineering.`}>
+  <div class="container inner">
+    <header class="intro"><p class="eyebrow">Writing</p><h1>Engineering notes</h1><p>On building assistants that check their evidence and services that recover cleanly.</p>
+      <a class="more" href={withBase('/rss.xml')}><Icon name="rss" size={15} /> Subscribe via RSS</a>
+    </header>
+    {tags.length > 0 && <div class="filters chips" role="group" aria-label="Filter by topic" hidden>
+      <button class="chip" type="button" aria-pressed="true" data-tag="">All posts</button>
+      {tags.map((t) => <button class="chip" type="button" aria-pressed="false" data-tag={t}>#{t}</button>)}
+    </div>}
+    <span class="sr-only" aria-live="polite" id="post-count"></span>
+    {posts.length ? <ul class="posts">{posts.map((post) => <PostRow post={post} heading="h2" />)}</ul> : <p>First posts are on the way.</p>}
+  </div>
+</Base>
+<script>
+  const filters = document.querySelector<HTMLElement>('.filters');
+  if (filters) {
+    const buttons = [...filters.querySelectorAll<HTMLButtonElement>('button')];
+    const items = [...document.querySelectorAll<HTMLElement>('.post-row')];
+    function filter(tag: string) {
+      let count = 0;
+      items.forEach((item) => {
+        const tags: string[] = JSON.parse(item.dataset.tags!);
+        item.hidden = Boolean(tag) && !tags.includes(tag);
+        if (!item.hidden) count++;
+      });
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tag === tag)));
+      document.getElementById('post-count')!.textContent = `${count} ${count === 1 ? 'post' : 'posts'} shown.`;
+    }
+    const current = new URL(location.href).searchParams.get('tag') ?? '';
+    filter(buttons.some((b) => b.dataset.tag === current) ? current : '');
+    for (const b of buttons) b.addEventListener('click', () => {
+      const tag = b.dataset.tag!;
+      const url = new URL(location.href);
+      if (tag) url.searchParams.set('tag',tag); else url.searchParams.delete('tag');
+      history.replaceState(null,'',url);
+      filter(tag);
+    });
+    filters.hidden = false;
+  }
+</script>

@@ -1,0 +1,13 @@
+---
+import Base from '../../layouts/Base.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import { selectedWork } from '../../data/work';
+import { profile } from '../../data/profile';
+const work = await selectedWork();
+---
+<Base title={`Case studies — ${profile.name}`} description="Engineering decisions behind reliable payments and grounded AI answers.">
+  <div class="container inner">
+    <header class="intro"><p class="eyebrow">Selected work</p><h1>Case studies</h1><p>Two perspectives on reliability: knowing when to take an action, and when the evidence is strong enough to answer.</p></header>
+    <div class="work">{work.map((entry) => <WorkCard entry={entry} />)}</div>
+  </div>
+</Base>

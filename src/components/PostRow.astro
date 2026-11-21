@@ -1,0 +1,18 @@
+---
+import Icon from './Icon.astro';
+import { postHref, readingMinutes, formatDate, type Post } from '../data/blog';
+interface Props { post: Post; heading?: 'h2' | 'h3' }
+const { post, heading: Heading = 'h3' } = Astro.props;
+const { data } = post;
+const external = data.externalUrl ? data.publication ?? new URL(data.externalUrl).hostname : undefined;
+const minutes = readingMinutes(post);
+---
+<li class="post-row" data-tags={JSON.stringify(data.tags)}>
+  <a class="post" href={postHref(post)}>
+    <time datetime={data.date.toISOString().slice(0,10)}>{formatDate(data.date)}</time>
+    <div><Heading>{data.title}</Heading><p>{data.description}</p>
+      <div class="post-meta">{data.draft && <span>Draft · </span>}{external ? `Read on ${external} ↗` : `${minutes ?? 1} min read`}{data.tags.length > 0 && ` · ${data.tags.map((t) => `#${t}`).join('  ')}`}</div>
+    </div>
+    <span class="arrow" aria-hidden="true"><Icon name={external ? 'outbound' : 'right'} /></span>
+  </a>
+</li>

@@ -1,0 +1,12 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { withBase } from '../lib/url';
+import WorkArt from './WorkArt.astro';
+import Icon from './Icon.astro';
+interface Props { entry: CollectionEntry<'work'> }
+const { entry: { id, data } } = Astro.props;
+---
+<a class="wc" href={withBase(`/work/${id}/`)} aria-labelledby={`work-${id}`}>
+  <WorkArt variant={data.cover} />
+  <div class="wb"><p class="wm">{data.context.split(' · ')[0]} · {data.category}</p><h3 id={`work-${id}`}>{data.title}</h3><p>{data.summary}</p><span class="wl">Read case study <Icon name="right" size={16} /></span></div>
+</a>

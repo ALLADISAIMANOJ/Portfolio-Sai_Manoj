@@ -1,0 +1,32 @@
+---
+import { profile } from '../data/profile';
+import { withBase } from '../lib/url';
+import AgentDemo from './AgentDemo.astro';
+import Icon from './Icon.astro';
+const social = [
+  { label: 'LinkedIn', icon: 'linkedin', url: profile.links.linkedin },
+  { label: 'GitHub', icon: 'github', url: profile.links.github },
+  { label: 'LeetCode', icon: 'leetcode', url: profile.links.leetcode },
+] as const;
+---
+<header class="hero">
+  <div class="aurora" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+  <div class="lines" aria-hidden="true"></div>
+  <div class="container hero-grid">
+    <div>
+      <span class="pill"><span class="live" aria-hidden="true"></span>AI &amp; backend engineering<span class="dsep" aria-hidden="true"></span>{profile.location}</span>
+      <h1>{profile.name}</h1>
+      <p class="tagline">Software engineer building <span class="g">reliable AI agents</span> and the backend systems they run on.</p>
+      <p class="sub">SDE at <b>{profile.roles[0].team}</b>. Previously <b>{profile.roles[1].company}</b> and <b>{profile.roles[2].company}</b> — {profile.experience} years across agentic AI, retrieval and distributed payments.</p>
+      <div class="cta">
+        <a class="btn btn-1" href="#work">View my work <Icon name="right" size={17} /></a>
+        <a class="btn btn-2" href={withBase('/resume/')}><Icon name="resume" size={17} /> Résumé</a>
+        <div class="soc-row">{social.map((s) => <a class="soc" href={s.url} rel="me" aria-label={s.label} title={s.label}><Icon name={s.icon} size={18} /></a>)}</div>
+      </div>
+    </div>
+    <AgentDemo />
+  </div>
+  <div class="container journey" aria-label="Career and education"><span class="jl">Journey</span>
+    {[...profile.roles.map((r) => r.company), profile.education.short].map((org) => <span class="org"><span class="tile" aria-hidden="true">{org[0]}</span>{org}</span>)}
+  </div>
+</header>

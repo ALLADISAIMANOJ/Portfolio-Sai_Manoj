@@ -1,0 +1,32 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import WorkArt from '../../components/WorkArt.astro';
+import { selectedWork } from '../../data/work';
+import { profile } from '../../data/profile';
+import { withBase } from '../../lib/url';
+export async function getStaticPaths() {
+  const entries = await selectedWork();
+  return entries.map((entry, i) => ({
+    params: { slug: entry.id }, props: { entry, next: entries.length > 1 ? entries[(i+1) % entries.length] : null },
+  }));
+}
+const { entry, next } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+---
+<Base title={`${data.title} — ${profile.name}`} description={data.summary} type="article">
+  <article class="container inner">
+    <a class="back" href={withBase('/work/')}><Icon name="left" size={16} /> All case studies</a>
+    <header class="intro"><p class="eyebrow">{data.category}</p><h1>{data.title}</h1><p>{data.summary}</p></header>
+    <div class="case-layout">
+      <aside class="case-info"><WorkArt variant={data.cover} /><dl>
+        <dt>Context</dt><dd>{data.context}</dd><dt>My contribution</dt><dd>{data.contribution}</dd>
+        <dt>Topics</dt><dd><ul class="chips">{data.tags.map((t) => <li class="chip">{t}</li>)}</ul></dd>
+      </dl></aside>
+      <div class="prose"><Content /></div>
+    </div>
+    {next && <nav class="reading-nav" aria-label="Other case studies"><a class="more" href={withBase(`/work/${next.id}/`)}>Next: {next.data.title} <Icon name="right" size={16} /></a></nav>}
+  </article>
+</Base>

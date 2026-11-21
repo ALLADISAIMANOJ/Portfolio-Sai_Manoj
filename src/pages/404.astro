@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { profile } from '../data/profile';
+import { withBase } from '../lib/url';
+---
+<Base title={`Page not found — ${profile.name}`} description="That page doesn’t exist in this portfolio." noindex>
+  <div class="container inner missing"><div class="aurora" aria-hidden="true"><i class="a1"></i><i class="a3"></i></div>
+    <p class="eyebrow">404 · Page not found</p><h1>Let’s get you back.</h1><p>The address may have changed. You can still explore the case studies or read the latest notes.</p>
+    <div class="cta"><a class="btn btn-1" href={withBase('/')}>Back home</a><a class="btn btn-2" href={withBase('/work/')}>View work</a></div>
+  </div>
+</Base>

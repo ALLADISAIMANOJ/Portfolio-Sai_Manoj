@@ -1,0 +1,58 @@
+---
+import Icon from './Icon.astro';
+import { profile } from '../data/profile';
+---
+<section class="section" id="experience" aria-labelledby="experience-title"><div class="container">
+  <header class="head"><p class="eyebrow">Experience</p><h2 id="experience-title">Where I’ve built. <span class="m">What shipped.</span></h2></header>
+  <div class="exp" data-experience>
+    <div class="tabs" aria-label="Employers" hidden>{profile.roles.map((r) => (
+      <button class="tab" id={`tab-${r.id}`} type="button" aria-controls={`role-${r.id}`}>
+        <span class="tile" aria-hidden="true">{r.company[0]}</span>
+        <span><b>{r.company}</b><small>{r.start.slice(-4)} — {r.end === 'Present' ? 'Now' : r.end.slice(-4)}</small></span>
+      </button>
+    ))}</div>
+    <div class="panel">{profile.roles.map((r) => (
+      <article class="pane" id={`role-${r.id}`}>
+        <div class="ptop"><div><h3>{r.title}</h3><p class="orgl">{r.company} · {r.team} · {profile.location.split(',')[0]}</p></div><span class="date">{r.start} — {r.end}</span></div>
+        <ul class="bul">{r.points.map((p) => <li><Icon name="check" size={18} />{p}</li>)}</ul>
+        <ul class="chips" aria-label="Technologies">{r.tags.map((t) => <li class="chip">{t}</li>)}</ul>
+      </article>
+    ))}</div>
+  </div>
+</div></section>
+<script>
+  const widget = document.querySelector<HTMLElement>('[data-experience]');
+  if (widget) {
+    const list = widget.querySelector<HTMLElement>('.tabs')!;
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('button')];
+    const panels = [...widget.querySelectorAll<HTMLElement>('.pane')];
+    function activate(i: number, focus = false) {
+      tabs.forEach((t, j) => {
+        const selected = j === i;
+        t.tabIndex = selected ? 0 : -1;
+        t.setAttribute('aria-selected', String(selected));
+        t.classList.toggle('on', selected);
+        panels[j].hidden = !selected;
+      });
+      if (focus) tabs[i].focus();
+    }
+    list.setAttribute('role', 'tablist');
+    tabs.forEach((t, i) => {
+      t.setAttribute('role', 'tab');
+      panels[i].setAttribute('role', 'tabpanel');
+      panels[i].setAttribute('aria-labelledby', t.id);
+      panels[i].tabIndex = 0;
+      t.addEventListener('click', () => activate(i));
+      t.addEventListener('keydown', (e) => {
+        const index: Record<string, number> = {
+          ArrowRight: (i + 1) % tabs.length, ArrowDown: (i + 1) % tabs.length,
+          ArrowLeft: (i + tabs.length - 1) % tabs.length, ArrowUp: (i + tabs.length - 1) % tabs.length,
+          Home: 0, End: tabs.length - 1,
+        };
+        if (e.key in index) { e.preventDefault(); activate(index[e.key], true); }
+      });
+    });
+    activate(0);
+    list.hidden = false;
+  }
+</script>
